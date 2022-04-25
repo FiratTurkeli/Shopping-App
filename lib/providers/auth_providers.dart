@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shop_app/database/db_provider.dart';
 import 'package:shop_app/screens/home_screen.dart';
 import 'package:shop_app/utils/routes.dart';
+import '../models/user_model.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
  //base Url
@@ -25,6 +26,8 @@ class AuthenticationProvider extends ChangeNotifier {
    required String name,
    required String email,
    required String password,
+   required String id,
+   required bool rememberMe,
    BuildContext? context,
 }) async {
    _isLoadiing = true;
@@ -53,6 +56,9 @@ class AuthenticationProvider extends ChangeNotifier {
        final body = jsonDecode(req.body);
        print("Login Token : " + body["token"]);
        final token = body["token"];
+       User user = User(name: name, password: password, email: email, id: id, token: token);
+       DatabaseProvider().saveUser(user);
+       DatabaseProvider().remember(rememberMe) ;
        DatabaseProvider().saveToken(token);
         PageNavigator(ctx: context).nextPageOnly(page: const HomeScreen());           
        _isLoadiing = false;
@@ -78,6 +84,7 @@ class AuthenticationProvider extends ChangeNotifier {
  void loginUser({
    required String email,
    required String password,
+   required bool rememberMe,
    BuildContext? context,
  }) async {
    _isLoadiing = true;
@@ -103,6 +110,10 @@ class AuthenticationProvider extends ChangeNotifier {
        print(body);
        print("Login Token : " + body["token"]);
        final token = body["token"];
+       User user = User(password: password, email: email, token: token);
+       DatabaseProvider().saveUser(user);
+       DatabaseProvider().remember(rememberMe);
+       print("Auth remember ${rememberMe}");
        DatabaseProvider().saveToken(token);
        PageNavigator(ctx: context).nextPageOnly(page: const HomeScreen());
        _isLoadiing = false;

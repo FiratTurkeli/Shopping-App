@@ -7,8 +7,7 @@ import 'package:shop_app/widgets/tapButton.dart';
 
 import '../database/db_provider.dart';
 import '../providers/auth_providers.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+
 
 enum AuthMode { Signup, Login }
 
@@ -25,11 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
+  final TextEditingController passAgainController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   AuthMode _authMode = AuthMode.Login;
   final maskFormatter = MaskTextInputFormatter(mask:  '+# (###) ###-##-##');
   RegExp pass_valid = RegExp(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)");
-  late Box box1;
   bool isChecked = false;
 
   bool validatePassword(String pass){
@@ -71,12 +70,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    createBox();
   }
 
-  void createBox()async{
-    box1 = await Hive.openBox("loginData");
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20,),
                   TextFormField(
+                    obscureText: true,
                     controller: passController,
                     decoration: const InputDecoration(
                         labelText: "Password" ,
@@ -155,6 +152,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                   ),
+                  if (_authMode == AuthMode.Signup)
+                    const SizedBox(height: 20,),
+                    TextFormField(
+                      obscureText: true,
+                      controller: passAgainController,
+                      decoration: const InputDecoration(
+                          labelText: "Password Again" ,
+                          hintText: "Password Again",
+                          border: const OutlineInputBorder(),
+                          suffixIcon: const Icon(Icons.password_outlined)
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please enter re-password again";
+                        } if (passController.text != passAgainController.text) {
+                          return "Password do not match";
+                        }
+
+                        return null;
+                        
+                      },
+                    ),
                   const SizedBox(height: 20,),
 
                   if (_authMode == AuthMode.Signup)
@@ -171,7 +190,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                   const SizedBox(height: 20,),
-                    if (_authMode == AuthMode.Login)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -179,11 +197,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Checkbox(
                           value: isChecked,
                               onChanged: (value) async {
+                               setState(() {
+                                  isChecked=value!;
+                                 print(value);
+                              },
 
-                             isChecked= !isChecked;
-                              setState(() {
-
-                              });
+                               );
                               }
                           ),
                         ],
@@ -203,6 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           text: _authMode == AuthMode.Login ? "Login" : "Register" ,
                           tap: () async {
                             await _key.currentState!.validate();
+                            print("Login remember ${isChecked}");
                             if (emailController.text.isEmpty && passController.text.isEmpty) {
                               showMessage(
                                 message: "All fields are required",
@@ -210,10 +230,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             } else if (_authMode == AuthMode.Login) {
                               if(_key.currentState!.validate())
-                              auth.loginUser(email: emailController.text.trim(), password: passController.text.trim(), context: context);
+                              auth.loginUser(email: emailController.text.trim(), password: passController.text.trim(),rememberMe: isChecked, context: context);
                             } else if (_authMode == AuthMode.Signup) {
                               if(_key.currentState!.validate())
-                              auth.registerUser(name: nameController.text.trim(),email: emailController.text.trim(), password: passController.text.trim(), context: context);
+                              auth.registerUser(name: nameController.text.trim(),email: emailController.text.trim(), password: passController.text.trim(), id:phoneController.text,rememberMe: isChecked, context: context);
                             }
                           },
                           context: context,

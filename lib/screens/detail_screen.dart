@@ -5,8 +5,6 @@ import 'package:shop_app/providers/get_product_detail_provider.dart';
 import '../constants/color.dart';
 import '../constants/text_style.dart';
 import '../database/db_provider.dart';
-import '../models/product_model.dart';
-import '../providers/get_product_provider.dart';
 import '../widgets/product_container.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -21,7 +19,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getProductDetailProvider().getProductDetail(widget.id);
   }
@@ -33,8 +30,8 @@ class _DetailScreenState extends State<DetailScreen> {
       appBar: AppBar(
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
-        title: Text("Details" , style: appTitle,),
+        }, icon: const Icon(Icons.arrow_back_ios)),
+        title: const Text("Details" , style: appTitle,),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -42,7 +39,7 @@ class _DetailScreenState extends State<DetailScreen> {
             onPressed:(){
               DatabaseProvider().logOut(context);
             },
-            icon: Icon(Icons.exit_to_app_sharp), color: Colors.white,)
+            icon: const Icon(Icons.exit_to_app_sharp), color: Colors.white,)
         ],
       ),
       body:  Padding(
@@ -50,7 +47,6 @@ class _DetailScreenState extends State<DetailScreen> {
           child: FutureBuilder<ProductDetail>(
             future: getProductDetailProvider().getProductDetail(widget.id) ,
             builder: (context, snapshot){
-              print(snapshot);
               if (snapshot.hasError) {
                 return const Center(child: Text("Error Occured"),);
               }  else if (snapshot.hasData) {
@@ -58,8 +54,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Product List is empty"),
+                      children: const [
+                         Text("Product List is empty"),
                       ],
                     ),
                   );
@@ -72,6 +68,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         image: data.product!. image.toString(),
                         date: data.product!.timeStamp.toString(),
                         price: data.product!.price.toString(),
+                      id: data.product!.id.toString(),
                       type: 2,
                     ),
                   );
@@ -82,6 +79,6 @@ class _DetailScreenState extends State<DetailScreen> {
             },
           )
       ),
-    );;
+    );
   }
 }

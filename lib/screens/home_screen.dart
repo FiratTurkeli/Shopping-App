@@ -1,13 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_app/constants/color.dart';
 import 'package:shop_app/constants/text_style.dart';
-import 'package:shop_app/constants/url.dart';
 import 'package:shop_app/database/db_provider.dart';
-import 'package:shop_app/main.dart';
 import 'package:shop_app/models/product_model.dart';
 import 'package:shop_app/providers/get_product_provider.dart';
 import 'package:shop_app/screens/detail_screen.dart';
@@ -23,14 +19,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  String token = "";
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getProductProvider().getProduct();
-  }
 
+  }
 
 
 
@@ -39,8 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: primary,
       appBar: AppBar(
-        leading: Icon(Icons.menu),
-        title: Text("Shopping app" , style: appTitle,),
+        leading: const Icon(Icons.menu),
+        title: const Text("Shopping app" , style: appTitle,),
         centerTitle: true,
         elevation: 0,
         actions: [
@@ -48,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed:(){
               DatabaseProvider().logOut(context);
             },
-            icon: Icon(Icons.exit_to_app_sharp), color: Colors.white,)
+            icon: const Icon(Icons.exit_to_app_sharp), color: Colors.white,)
         ],
       ),
       body:  Padding(
@@ -64,14 +62,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Product List is empty"),
+                    children: const [
+                       Text("Product List is empty"),
                     ],
                   ),
                 );
               } else {
                 return ListView(
-
+                  physics: const ClampingScrollPhysics(),
+                  addRepaintBoundaries: false,
                   children:
                     List.generate(snapshot.data!.products!.length, (index){
                       final data = snapshot.data!.products![index];
@@ -79,13 +78,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () {
                           PageNavigator(ctx: context).nextPage(page: DetailScreen(id: data.id.toString()));
                         },
-                        child: ProductContainer(
-                            name: data.name.toString(),
-                            description: data.description.toString(),
-                            image: data.image.toString(),
-                            date: data.timeStamp.toString(),
-                            price: data.price.toString(),
-                          type: 1,
+                        child: SingleChildScrollView(
+                          child: ProductContainer(
+                              name: data.name.toString(),
+                              description: data.description.toString(),
+                              image: data.image.toString(),
+                              date: data.timeStamp.toString(),
+                              price: data.price.toString(),
+                            id: data.id.toString(),
+                            type: 1,
+                          ),
                         ),
                       );
                     })

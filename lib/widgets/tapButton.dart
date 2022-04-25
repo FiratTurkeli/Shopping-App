@@ -25,7 +25,7 @@ Widget tapButton(
       width: MediaQuery.of(context!).size.width,
       child: Text(
         status == false ? text! : 'Please wait...',
-        style: TextStyle(color: Colors.white, fontSize: 18),
+        style: const TextStyle(color: Colors.white, fontSize: 18),
       ),
     ),
   );

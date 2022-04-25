@@ -36,8 +36,7 @@ dependencies:
   mask_text_input_formatter:
   intl:
   cached_network_image: ^3.2.0
-  hive:
-  hive_flutter:
+  like_button:
 
 
   # The following adds the Cupertino Icons font to your application.
