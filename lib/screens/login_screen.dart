@@ -152,8 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                   ),
-                  if (_authMode == AuthMode.Signup)
+
                     const SizedBox(height: 20,),
+                  if (_authMode == AuthMode.Signup)
                     TextFormField(
                       obscureText: true,
                       controller: passAgainController,
