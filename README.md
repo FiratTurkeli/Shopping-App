@@ -1,6 +1,21 @@
-# shop_app
+# Shopping App
 
-A new Flutter project.
+• SIGN IN SCREEN:
+▪ Email login and email validations
+▪ Alphanumeric password validation
+▪ Remember me button when logging in. When this part is checked, the token received in the login will be kept and used in the next openings.
+
+• REGISTER SCREEN
+▪ Phone number entry with masking method "+ 90(505) 888-88-88"
+▪ Validation rules on the login screen
+
+HOME PAGE:
+▪ Listing of products from API
+▪ Adding and removing favorites
+▪ Clicking on the product should be directed to a screen where details about that product are displayed.
+
+DETAILED PAGE:
+▪ Product details clicked on the homepage
 
 ## Getting Started
 
